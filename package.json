@@ -1,0 +1,22 @@
+{
+  "name": "reverse-proxy",
+  "version": "1.0.0",
+  "description": "a simple reverse-proxy for node",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/victorglimskog/reverse-proxy.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/victorglimskog/reverse-proxy/issues"
+  },
+  "homepage": "https://github.com/victorglimskog/reverse-proxy#readme",
+  "dependencies": {
+    "http-proxy": "^1.16.2"
+  }
+}
