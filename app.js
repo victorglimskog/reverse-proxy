@@ -15,9 +15,9 @@ http.createServer((req,res) => {
     let port;
     let subDomain = hostParts.join('.');
 
-    if (subDomain = '' || subDomain == 'www') {
+    if (subDomain == '' || subDomain == 'www') {
         port = 4000;
-    } else if (subDomain = 'me') {
+    } else if (subDomain == 'me') {
         port = 3000;
     } else {
         res.statusCode = 500;
