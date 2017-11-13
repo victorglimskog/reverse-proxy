@@ -10,10 +10,11 @@ http.createServer((req,res) => {
     const hostParts = host.split('.');
     const topDomain = hostParts.pop();
     const domain = hostParts.pop();
-    const subDomain = hostParts.join('.');
     const urlParts = req.url.split('/');
 
     let port;
+    let subDomain = hostParts.join('.');
+
     if (subDomain = '' || subDomain == 'www') {
         port = 4000;
     } else if (subDomain = 'me') {
