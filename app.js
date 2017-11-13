@@ -10,5 +10,5 @@ const proxy = httpProxy.createProxyServer();
 
 // Create a new webserver
 http.createServer((req,res) => {
-    res.end('url: ', req.url);
+    res.end('url: '+req.url);
 }).listen(80);
