@@ -58,7 +58,11 @@ https.createServer({
     let port;
     let subDomain = hostParts.join('.');
 
-    if (subDomain == '' || subDomain == 'www') {
+    if (subDomain == 'www'){
+        let url = 'https://' + domain + '.' + topDomain + req.url;
+        res.writeHead(301, {'Location': url});
+        res.end();
+    } else if (subDomain == '' || subDomain == 'www') {
         port = 4000; // app: testapp
     } else if (subDomain == 'me') {
         port = 3000; // app: small-node
@@ -106,4 +110,4 @@ function renewCerts() {
 // Renew certs if needed on start
 renewCerts();
 // and then once every day
-setInterval(renewCers, 1000 * 60 * 60 * 24);
+setInterval(renewCerts, 1000 * 60 * 60 * 24);
