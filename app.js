@@ -1,4 +1,5 @@
 const http = require('http');
+const https = require('https');
 const httpProxy = require('http-proxy');
 const tls = require('tls');
 const fs = require('fs');
@@ -18,7 +19,14 @@ proxy.on('error', function(e) {
 });
 
 // Create a new webserver
-http.createServer((req,res) => {
+https.createServer({
+    // SNICallback lets us get the correct certs
+    // depending on what the domain the user asks for
+    SNICallback: (domain, callback) => callback(null, certs[domain].secureContext),
+    // But we still have the server start with a "default" cert
+    key: certs['victorglimskog.se'].key,
+    cert: certs['victorglimskog.se'].cert,
+}, (req,res) => {
     // replace setResponseHeaders
     setResponseHeaders(req,res);
 
@@ -44,7 +52,7 @@ http.createServer((req,res) => {
     if (port) {
         proxy.web(req, res, {target: 'http://127.0.0.1:' + port});
     }
-}).listen(80);
+}).listen(443);
 
 function setResponseHeaders(req,res) {
     res.oldWriteHead = res.writeHead;
