@@ -28,7 +28,7 @@ http.createServer((req, res) => {
         proxy.web(req, res, {target: 'http://127.0.0.1:5000'});
     } else {
         // redirect to https
-        const url = 'https://' + req.headers.host + req.url;
+        let url = 'https://' + req.headers.host + req.url;
         res.writeHead(301, {'Location': url});
         res.end();
     }
