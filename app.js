@@ -23,7 +23,7 @@ http.createServer((req,res) => {
 
     let port;
     let subDomain = hostParts.join('.');
-    if (urlParts[0] === '.well-known') {
+    if (urlParts[1] === '.well-known') {
         port = 5000; // app: cert-bot-helper
     } else if (subDomain == '' || subDomain == 'www') {
         port = 4000; // app: testapp
