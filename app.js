@@ -62,7 +62,7 @@ https.createServer({
         let url = 'https://' + domain + '.' + topDomain + req.url;
         res.writeHead(301, {'Location': url});
         res.end();
-    } else if (subDomain == '' || subDomain == 'www') {
+    } else if (subDomain == '') {
         port = 4000; // app: testapp
     } else if (subDomain == 'me') {
         port = 3000; // app: small-node
@@ -102,7 +102,7 @@ function readCerts(pathToCerts) {
 
 function renewCerts() {
     exec('certbot renew', (error, stdout, stdError) => {
-        console.log('renewing certs', stdOut);
+        console.log('renewing certs', stdout);
         certs = readCerts('/etc/letsencrypt/live');
     });
 }
