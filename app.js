@@ -2,6 +2,7 @@ const http = require('http');
 const httpProxy = require('http-proxy');
 const tls = require('tls');
 const fs = require('fs');
+const path = require('path');
 
 // read all certs from certbot into an object
 let certs = readCerts('/etc/letsencrypt/live');
