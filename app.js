@@ -7,7 +7,6 @@ const path = require('path');
 
 // read all certs from certbot into an object
 let certs = readCerts('/etc/letsencrypt/live');
-console.log(certs);
 
 // Create a new reverse proxy
 const proxy = httpProxy.createProxyServer();
@@ -18,11 +17,30 @@ proxy.on('error', function(e) {
     console.log('Proxy error: ', e);
 });
 
-// Create a new webserver
+// Create a new unencrypted webserver for certbot challenges
+// and redirects to https
+http.createServer((req, res) => {
+    const urlParts = req.url.split('/');
+
+    if (urlParts[1] == '.well-known') {
+        // using certbot-helper on port 5000
+        proxy.web(req, res, {target: 'http://127.0.0.1:5000'});
+    } else {
+        // redirect to https
+        const url = 'https://' + req.headers.host + req.url;
+        res.writeHead(301, {'Location': url});
+        res.end();
+    }
+}).listen(80);
+
+// Create a new secure webserver
 https.createServer({
     // SNICallback lets us get the correct certs
     // depending on what the domain the user asks for
-    SNICallback: (domain, callback) => callback(null, certs[domain].secureContext),
+    SNICallback: (domain, callback) => callback(
+        certs[domain] ? null : new Error('No such cert'),
+        certs[domain] ? certs[domain].secureContext : null
+    ),
     // But we still have the server start with a "default" cert
     key: certs['victorglimskog.se'].key,
     cert: certs['victorglimskog.se'].cert,
@@ -38,9 +56,8 @@ https.createServer({
 
     let port;
     let subDomain = hostParts.join('.');
-    if (urlParts[1] === '.well-known') {
-        port = 5000; // app: cert-bot-helper
-    } else if (subDomain == '' || subDomain == 'www') {
+
+    if (subDomain == '' || subDomain == 'www') {
         port = 4000; // app: testapp
     } else if (subDomain == 'me') {
         port = 3000; // app: small-node
