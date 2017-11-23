@@ -80,6 +80,15 @@ function setResponseHeaders(req,res) {
     res.oldWriteHead = res.writeHead;
     res.writeHead = function (statusCode, headers) {
         res.setHeader('x-powered-by','vgl server');
+
+        // Security related
+        res.setHeader('strict-transport-security','max-age=31536000; includeSubDomains; preload');
+        res.setHeader('x-frame-options','SAMEORIGIN');
+        res.setHeader('x-xss-protection', '1');
+        res.setHeader('x-content-type-options','nosniff');
+        res.setHeader('content-security-policy',"default-src * 'unsafe-inline' 'unsafe-eval'");
+
+        // Call the original write head function as well
         res.oldWriteHead(statusCode,headers);
     }
 }
