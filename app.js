@@ -6,6 +6,9 @@ const fs = require('fs');
 const path = require('path');
 const exec = require('child_process').exec;
 
+// read our routes
+const routs = require('routing.json');
+
 // read all certs from certbot into an object
 let certs = readCerts('/etc/letsencrypt/live');
 
@@ -50,29 +53,36 @@ https.createServer({
     setResponseHeaders(req,res);
 
     const host = req.headers.host;
-    const hostParts = host.split('.');
-    const topDomain = hostParts.pop();
-    const domain = hostParts.pop();
-    const urlParts = req.url.split('/');
+
+    let url = req.url;
+    let portToUse;
+
+    url = url + (url.substr(-1) != '/' ? '/' : '');
+
+    for(let route in routes) {
+        if (route.includes('/')) {
+            route += (route.substr(-1) != '/' ? '/' : '');
+        }
+        let port = routes[route];
+        if (route == host) {
+            portToUse = port;
+        } else if (route.indexOf(host + url) == 0) {
+            portToUse = port;
+        }
+    }
 
     let port;
-    let subDomain = hostParts.join('.');
 
-    if (subDomain == 'www'){
-        let url = 'https://' + domain + '.' + topDomain + req.url;
+    if (portToUse.redirect) {
+        // redirect to domain without www
+        let url = 'https://' + portToUse.redirect;
         res.writeHead(301, {'Location': url});
         res.end();
-    } else if (subDomain == '') {
-        port = 4000; // app: testapp
-    } else if (subDomain == 'me') {
-        port = 3000; // app: small-node
+    } else if (portToUse) {
+        proxy.web(req, res, {target: 'http://127.0.0.1:' + portToUse});
     } else {
         res.statusCode = 404;
         res.end('This is not the page you are looking for.');
-    }
-
-    if (port) {
-        proxy.web(req, res, {target: 'http://127.0.0.1:' + port});
     }
 }).listen(443);
 
