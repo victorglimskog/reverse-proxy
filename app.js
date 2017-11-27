@@ -60,23 +60,23 @@ https.createServer({
     url = url + (url.substr(-1) != '/' ? '/' : '');
 
     for(let route in routes) {
+        let port = routes[route];
+
         if (route.includes('/')) {
             route += (route.substr(-1) != '/' ? '/' : '');
         }
-        let port = routes[route];
-        if (route == host) {
+
+        if (route === host) {
             portToUse = port;
-        } else if (route.indexOf(host + url) == 0) {
+        } else if (route.indexOf(host + url) === 0) {
             portToUse = port;
         }
     }
 
-    let port;
-
     if (portToUse && portToUse.redirect) {
         // redirect to domain without www
-        let url = 'https://' + portToUse.redirect;
-        res.writeHead(301, {'Location': url});
+        let urlLocation = 'https://' + portToUse.redirect;
+        res.writeHead(301, {'Location': urlLocation});
         res.end();
     } else if (portToUse) {
         proxy.web(req, res, {target: 'http://127.0.0.1:' + portToUse});
