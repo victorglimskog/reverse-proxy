@@ -7,7 +7,7 @@ const path = require('path');
 const exec = require('child_process').exec;
 
 // read our routes
-const routs = require('./routing.json');
+const routes = require('./routing.json');
 
 // read all certs from certbot into an object
 let certs = readCerts('/etc/letsencrypt/live');
@@ -73,7 +73,7 @@ https.createServer({
 
     let port;
 
-    if (portToUse.redirect) {
+    if (portToUse && portToUse.redirect) {
         // redirect to domain without www
         let url = 'https://' + portToUse.redirect;
         res.writeHead(301, {'Location': url});
