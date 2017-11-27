@@ -7,7 +7,7 @@ const path = require('path');
 const exec = require('child_process').exec;
 
 // read our routes
-const routs = require('routing.json');
+const routs = require('./routing.json');
 
 // read all certs from certbot into an object
 let certs = readCerts('/etc/letsencrypt/live');
