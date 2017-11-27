@@ -1,0 +1,8 @@
+{
+    "victorglimskog.se":4000,
+    "www.victorglimskog.se": {
+        "redirect":"victorglimskog.se"
+    },
+    "me.victorglimskog.se": 3000,
+    "victorglimskog.se/me": 3000
+}
